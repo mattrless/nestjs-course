@@ -9,6 +9,8 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto/update-user.dto';
 
 interface User {
   id: number;
@@ -45,7 +47,7 @@ export class UsersController {
   }
 
   @Post()
-  createUser(@Body() body: User) {
+  createUser(@Body() body: CreateUserDto) {
     const newUser: User = {
       ...body,
       id: this.users.sort((a, b) => b.id - a.id)[0].id + 1, // greater id + 1
@@ -57,7 +59,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() body: User) {
+  updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     const userIndex = this.users.findIndex((u) => u.id === parseInt(id));
     if (userIndex === -1) {
       return {

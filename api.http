@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 
 ### Update user
-PUT http://localhost:3000/users/1
+PUT http://localhost:3000/users/2
 Content-Type: application/json
 
 {
