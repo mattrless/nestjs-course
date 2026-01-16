@@ -25,5 +25,8 @@ Content-Type: application/json
 ### Delete user by id
 DELETE http://localhost:3000/users/6
 
-### Test from another controller
+### Test service from another controller
 GET http://localhost:3000/test
+
+### Root path
+GET http://localhost:3000/
