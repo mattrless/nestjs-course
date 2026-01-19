@@ -6,17 +6,21 @@ import {
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto/update-user.dto';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class UsersService {
+  constructor(private prismaService: PrismaService) {}
+
   private users: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' },
+    { id: 1, name: 'John Doe', email: 'john@example.  com' },
     { id: 2, name: 'Jane Doe', email: 'jane@example.com' },
     { id: 3, name: 'Charles Doe', email: 'charles@example.com' },
   ];
 
   findAll() {
-    return this.users;
+    // return this.users;
+    return this.prismaService.users.findMany();
   }
 
   findUserById(id: string) {
