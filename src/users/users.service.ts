@@ -13,7 +13,8 @@ export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   async findAll() {
-    return this.prismaService.user.findMany();
+    const users = await this.prismaService.user.findMany();
+    return users;
   }
 
   async findUserById(id: number) {
@@ -52,14 +53,32 @@ export class UsersService {
   }
 
   async updateUser(id: number, body: UpdateUserDto) {
-    const updatedUser = await this.prismaService.user.update({
-      where: {
-        id: id,
-      },
-      data: body,
-    });
+    try {
+      const updatedUser = await this.prismaService.user.update({
+        where: { id },
+        data: {
+          email: body.email,
+          password: body.password,
 
-    return updatedUser;
+          profile: body.profile
+            ? {
+                update: {
+                  name: body.profile.name,
+                  lastName: body.profile.lastName,
+                  avatar: body.profile.avatar,
+                },
+              }
+            : undefined,
+        },
+        include: {
+          profile: true,
+        },
+      });
+
+      return updatedUser;
+    } catch {
+      throw new BadRequestException('Error updating user');
+    }
   }
 
   async deleteUser(id: number) {
@@ -76,10 +95,18 @@ export class UsersService {
     return deletedUser;
   }
 
+  async findProfileByUserId(id: number) {
+    const user = await this.findOne(id);
+    return user.profile;
+  }
+
   private async findOne(id: number) {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: id,
+      },
+      include: {
+        profile: true,
       },
     });
 

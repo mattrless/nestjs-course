@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
@@ -10,6 +10,7 @@ export class CreateProfileDto {
   lastName: string;
 
   @IsString()
+  @IsUrl()
   @IsOptional()
   avatar: string;
 }

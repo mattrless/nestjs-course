@@ -18,16 +18,21 @@ Content-Type: application/json
 }
 
 ### Update user
-PUT http://localhost:3000/users/2
+PUT http://localhost:3000/users/3
 Content-Type: application/json
 
 {
-  "name": "edited Doe",
-  "email":"edited@example.com"
+  "email":"edit@example.com",
+  "profile" : {
+    "lastName": "edit"
+  }
 }
 
 ### Delete user by id
 DELETE http://localhost:3000/users/6
+
+### Get profile by user id
+GET http://localhost:3000/users/3/profile
 
 ### Test service from another controller
 GET http://localhost:3000/test
