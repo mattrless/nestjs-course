@@ -2,8 +2,8 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
-import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
@@ -12,20 +12,12 @@ import { PrismaService } from '../prisma.service';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  private users: User[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.  com' },
-    { id: 2, name: 'Jane Doe', email: 'jane@example.com' },
-    { id: 3, name: 'Charles Doe', email: 'charles@example.com' },
-  ];
-
-  findAll() {
-    // return this.users;
-    return this.prismaService.users.findMany();
+  async findAll() {
+    return this.prismaService.user.findMany();
   }
 
-  findUserById(id: string) {
-    const userIndex = this.getUserIndexById(id);
-    const user = this.users[userIndex];
+  async findUserById(id: number) {
+    const user = await this.findOne(id);
 
     if (user.id === 1) {
       throw new ForbiddenException('Not allowed to access this user.');
@@ -34,49 +26,53 @@ export class UsersService {
     return user;
   }
 
-  createUser(body: CreateUserDto) {
-    const newUser: User = {
-      ...body,
-      id: this.users.sort((a, b) => b.id - a.id)[0].id + 1, // greater id + 1
-    };
+  async createUser(body: CreateUserDto) {
+    try {
+      const newUser = await this.prismaService.user.create({
+        data: body,
+      });
 
-    this.users.push(newUser);
-
-    return newUser;
+      return newUser;
+    } catch {
+      throw new BadRequestException('Error creating user');
+    }
   }
 
-  updateUser(id: string, body: UpdateUserDto) {
-    const userIndex = this.getUserIndexById(id);
+  async updateUser(id: number, body: UpdateUserDto) {
+    const updatedUser = await this.prismaService.user.update({
+      where: {
+        id: id,
+      },
+      data: body,
+    });
 
-    const user = this.users[userIndex];
-    const updatedUser = {
-      ...user,
-      ...body,
-    };
-
-    this.users[userIndex] = updatedUser;
     return updatedUser;
   }
 
-  deleteUser(id: string) {
-    // delete with splice
-    const userIndex = this.getUserIndexById(id);
+  async deleteUser(id: number) {
+    const deletedUser = await this.prismaService.user.delete({
+      where: {
+        id: id,
+      },
+    });
 
-    this.users.splice(userIndex, 1);
+    if (!deletedUser) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
 
-    //delete with filter
-    // this.users = this.users.filter((u) => u.id !== parseInt(id));
-
-    return {
-      message: 'User deleted.',
-    };
+    return deletedUser;
   }
 
-  private getUserIndexById(id: string) {
-    const userIndex = this.users.findIndex((u) => u.id === parseInt(id));
-    if (userIndex === -1) {
+  private async findOne(id: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!user) {
       throw new NotFoundException('User not found.');
     }
-    return userIndex;
+    return user;
   }
 }

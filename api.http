@@ -2,15 +2,15 @@
 GET http://localhost:3000/users
 
 ### Get user by id
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/3
 
 ### Create user
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "name":"Daniel Doe",
-  "email":"Daniel@example.com"
+  "email":"Carlos@example.com",
+  "password":"12345"
 }
 
 ### Update user
