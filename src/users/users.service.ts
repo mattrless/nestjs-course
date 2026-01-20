@@ -29,7 +29,20 @@ export class UsersService {
   async createUser(body: CreateUserDto) {
     try {
       const newUser = await this.prismaService.user.create({
-        data: body,
+        data: {
+          email: body.email,
+          password: body.password,
+          profile: {
+            create: {
+              name: body.profile.name,
+              lastName: body.profile.lastName,
+              avatar: body.profile.avatar,
+            },
+          },
+        },
+        include: {
+          profile: true,
+        },
       });
 
       return newUser;

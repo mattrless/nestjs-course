@@ -9,8 +9,12 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email":"Carlos@example.com",
-  "password":"12345"
+  "email":"Daniel@example.com",
+  "password":"12345",
+  "profile" : {
+    "name": "Carlos",
+    "lastName": "Doe"
+  }
 }
 
 ### Update user
