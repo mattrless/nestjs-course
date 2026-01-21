@@ -60,3 +60,13 @@ model Post {
 
   @@map("posts")
 }
+
+model Category {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
