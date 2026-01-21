@@ -48,4 +48,9 @@ export class UsersController {
   getProfileUserById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findProfileByUserId(id);
   }
+
+  @Get(':id/posts')
+  getPostsByUserId(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findPostsByUserId(id);
+  }
 }

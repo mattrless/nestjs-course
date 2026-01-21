@@ -12,13 +12,20 @@ export class PostsService {
   constructor(private prismaService: PrismaService) {}
 
   async findAll() {
-    const posts = await this.prismaService.post.findMany();
+    const posts = await this.prismaService.post.findMany({
+      include: {
+        user: true,
+      },
+    });
     return posts;
   }
 
   async findOne(id: number) {
     const post = await this.prismaService.post.findUnique({
       where: { id },
+      include: {
+        user: true,
+      },
     });
 
     if (!post) {
@@ -31,7 +38,20 @@ export class PostsService {
   async create(createPostDto: CreatePostDto) {
     try {
       return await this.prismaService.post.create({
-        data: createPostDto,
+        data: {
+          title: createPostDto.title,
+          content: createPostDto.content,
+          coverImage: createPostDto.coverImage,
+          summary: createPostDto.summary,
+          user: {
+            connect: {
+              id: createPostDto.userId,
+            },
+          },
+        },
+        include: {
+          user: true,
+        },
       });
     } catch {
       throw new BadRequestException('Error creating post');
@@ -43,6 +63,9 @@ export class PostsService {
       return await this.prismaService.post.update({
         where: { id },
         data: updatePostDto,
+        include: {
+          user: true,
+        },
       });
     } catch {
       throw new NotFoundException(`Post with id ${id} not found`);

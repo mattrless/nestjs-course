@@ -101,6 +101,16 @@ export class UsersService {
     return user.profile;
   }
 
+  async findPostsByUserId(id: number) {
+    const posts = await this.prismaService.post.findMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    return posts;
+  }
+
   private async findOne(id: number) {
     const user = await this.prismaService.user.findUnique({
       where: {

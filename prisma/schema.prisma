@@ -22,6 +22,8 @@ model User {
   profileId Int      @unique @map("profile_id")
   profile   Profile  @relation(fields: [profileId], references: [id])
 
+  posts     Post[]
+  
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -46,9 +48,12 @@ model Post {
   id          Int         @id @default(autoincrement())
   title       String
   content     String?
-  coverImage  String?      @map("cover_image")
+  coverImage  String?     @map("cover_image")
   summary     String?
   isDraft     Boolean     @default(true) @map("is_draft")
+
+  userId      Int         @map("user_id")
+  user        User        @relation(fields: [userId], references: [id])
 
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
