@@ -7,6 +7,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
+import { Prisma } from '../../generated/prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -29,7 +30,7 @@ export class UsersService {
 
   async createUser(body: CreateUserDto) {
     try {
-      const newUser = await this.prismaService.user.create({
+      return await this.prismaService.user.create({
         data: {
           email: body.email,
           password: body.password,
@@ -41,14 +42,17 @@ export class UsersService {
             },
           },
         },
-        include: {
-          profile: true,
-        },
+        include: { profile: true },
       });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new BadRequestException('Email already exists');
+      }
 
-      return newUser;
-    } catch {
-      throw new BadRequestException('Error creating user');
+      throw error;
     }
   }
 
@@ -82,17 +86,14 @@ export class UsersService {
   }
 
   async deleteUser(id: number) {
-    const deletedUser = await this.prismaService.user.delete({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!deletedUser) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+    try {
+      const user = await this.prismaService.user.delete({
+        where: { id },
+      });
+      return user;
+    } catch {
+      throw new NotFoundException(`User with id ${id} not found`);
     }
-
-    return deletedUser;
   }
 
   async findProfileByUserId(id: number) {
