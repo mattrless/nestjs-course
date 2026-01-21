@@ -43,4 +43,9 @@ export class PostsController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.remove(id);
   }
+
+  @Get(':id/posts')
+  getPostsByCategoryId(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findPostsByCategoryId(id);
+  }
 }

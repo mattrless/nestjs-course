@@ -15,6 +15,11 @@ export class PostsService {
     const posts = await this.prismaService.post.findMany({
       include: {
         user: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
     return posts;
@@ -25,6 +30,11 @@ export class PostsService {
       where: { id },
       include: {
         user: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     });
 
@@ -43,14 +53,31 @@ export class PostsService {
           content: createPostDto.content,
           coverImage: createPostDto.coverImage,
           summary: createPostDto.summary,
+
           user: {
             connect: {
               id: createPostDto.userId,
             },
           },
+
+          categories: createPostDto.categoryIds
+            ? {
+                create: createPostDto.categoryIds.map((categoryId) => ({
+                  category: {
+                    connect: { id: categoryId },
+                  },
+                })),
+              }
+            : undefined,
         },
+
         include: {
           user: true,
+          categories: {
+            include: {
+              category: true,
+            },
+          },
         },
       });
     } catch {
@@ -80,5 +107,19 @@ export class PostsService {
     } catch {
       throw new NotFoundException(`Post with id ${id} not found`);
     }
+  }
+
+  async findPostsByCategoryId(categoryId: number) {
+    const posts = await this.prismaService.post.findMany({
+      where: {
+        categories: {
+          some: {
+            categoryId: categoryId,
+          },
+        },
+      },
+    });
+
+    return posts;
   }
 }

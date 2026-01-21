@@ -9,12 +9,16 @@ import {
   Put,
 } from '@nestjs/common';
 import { CategoriesService } from '../services/categories.service';
+import { PostsService } from './../services/posts.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @Controller('categories')
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+  constructor(
+    private readonly categoriesService: CategoriesService,
+    private readonly postsService: PostsService,
+  ) {}
 
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
@@ -42,5 +46,10 @@ export class CategoriesController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.remove(id);
+  }
+
+  @Get(':id/posts')
+  getPostsByCategoryId(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findPostsByCategoryId(id);
   }
 }

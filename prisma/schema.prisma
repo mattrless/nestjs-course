@@ -55,6 +55,8 @@ model Post {
   userId      Int         @map("user_id")
   user        User        @relation(fields: [userId], references: [id])
 
+  categories  PostCategory[]
+  
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
 
@@ -65,8 +67,23 @@ model Category {
   id          Int         @id @default(autoincrement())
   name        String      @unique
 
+  posts       PostCategory[]
+
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at")
 
   @@map("categories")
+}
+
+model PostCategory {
+  postId     Int      @map("post_id")
+  categoryId Int      @map("category_id")
+
+  post       Post     @relation(fields: [postId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@id([postId, categoryId])
+  @@map("post_categories")
 }
