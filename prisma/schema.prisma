@@ -48,7 +48,7 @@ model Post {
   id          Int         @id @default(autoincrement())
   title       String
   content     String?
-  coverImage  String?     @map("cover_image")
+  coverImage  String?     @map("cover_image") @db.VarChar(2048)
   summary     String?
   isDraft     Boolean     @default(true) @map("is_draft")
 
@@ -66,6 +66,8 @@ model Post {
 model Category {
   id          Int         @id @default(autoincrement())
   name        String      @unique
+  description String?
+  coverImage  String?     @map("cover_image")
 
   posts       PostCategory[]
 

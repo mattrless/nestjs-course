@@ -10,7 +10,7 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email":"carlos@example.com",
+  "email":"test@example.com",
   "password":"12345",
   "profile" : {
     "name": "Carlos",
@@ -51,9 +51,10 @@ POST http://localhost:3000/posts
 Content-Type: application/json
 
 {
-  "title": "My first post",
+  "title": "My third post",
   "content": "This is the content of my first post",
   "userId": 1,
+  "coverImage": "TESTETSETESTSDFFGHDFG",
   "categoryIds": [2, 3]
 }
 
