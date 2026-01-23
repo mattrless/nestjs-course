@@ -60,6 +60,7 @@ GET http://localhost:3000/posts/1
 ### Create post
 POST http://localhost:3000/posts
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjUsImlhdCI6MTc2OTE4OTY3NiwiZXhwIjoxNzY5NDQ4ODc2fQ.JDj_mZ-QUh5AgLm3hL9MkAB9EMiHTxUxP7DZtx-1ttE
 
 {
   "title": "My third post",
@@ -68,6 +69,7 @@ Content-Type: application/json
   "coverImage": "TESTETSETESTSDFFGHDFG",
   "categoryIds": [2, 3]
 }
+
 
 ### Update post
 PUT http://localhost:3000/posts/2
