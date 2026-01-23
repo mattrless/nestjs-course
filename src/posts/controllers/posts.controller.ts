@@ -8,11 +8,14 @@ import {
   ParseIntPipe,
   Put,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PostsService } from '../services/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Payload } from 'src/auth/payload';
+import type { Request } from 'express';
 
 @Controller('posts')
 export class PostsController {
@@ -20,8 +23,10 @@ export class PostsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @Req() req: Request) {
+    const payload = req.user as Payload;
+    const userId = payload.sub;
+    return this.postsService.create(createPostDto, userId);
   }
 
   @Get()

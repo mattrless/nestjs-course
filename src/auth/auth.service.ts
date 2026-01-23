@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../../generated/prisma/client';
+import { Payload } from './payload';
 @Injectable()
 export class AuthService {
   constructor(
@@ -31,7 +32,7 @@ export class AuthService {
 
   generateToken(user: User) {
     // data to store in the token
-    const payload = { sub: user.id };
+    const payload: Payload = { sub: user.id };
     return this.jwtService.sign(payload);
   }
 }

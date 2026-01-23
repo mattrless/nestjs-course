@@ -45,7 +45,7 @@ export class PostsService {
     return post;
   }
 
-  async create(createPostDto: CreatePostDto) {
+  async create(createPostDto: CreatePostDto, userId: number) {
     try {
       return await this.prismaService.post.create({
         data: {
@@ -56,7 +56,7 @@ export class PostsService {
 
           user: {
             connect: {
-              id: createPostDto.userId,
+              id: userId,
             },
           },
 
