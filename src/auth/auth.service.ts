@@ -1,10 +1,14 @@
 import { UsersService } from './../users/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-
+import { JwtService } from '@nestjs/jwt';
+import { User } from '../../generated/prisma/client';
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.getUserByEmail(email);
@@ -23,5 +27,11 @@ export class AuthService {
     const { password, ...safeUser } = user;
 
     return safeUser;
+  }
+
+  generateToken(user: User) {
+    // data to store in the token
+    const payload = { sub: user.id };
+    return this.jwtService.sign(payload);
   }
 }
