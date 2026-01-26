@@ -16,6 +16,8 @@ import { UpdatePostDto } from '../dto/update-post.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Payload } from 'src/auth/payload';
 import type { Request } from 'express';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { PostResponseDto } from '../dto/response-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -23,6 +25,7 @@ export class PostsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
+  @ApiOperation({ summary: 'To create a post' })
   create(@Body() createPostDto: CreatePostDto, @Req() req: Request) {
     const payload = req.user as Payload;
     const userId = payload.sub;
@@ -30,11 +33,15 @@ export class PostsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'To get all posts' })
+  @ApiResponse({ status: 200, description: 'The list of posts' })
   findAll() {
     return this.postsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'To get one post by id' })
+  @ApiResponse({ status: 200, description: 'One post', type: PostResponseDto })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findOne(id);
   }
